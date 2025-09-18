@@ -102,6 +102,17 @@ const validateAccessToken = (token, req = {}) => {
 };
 
 /**
+ * Validates email verification token
+ * @param {string} token - The verification token to validate
+ * @param {import('express').Request} req - The request object for logging context
+ * @returns {object} - The decoded token if valid
+ * @throws {Error} - Throws an error if the token is invalid or expired
+ */
+const validateEmailVerificationToken = (token, req = {}) => {
+	return validateToken(token, JWT_EMAIL_VERIFICATION_SECRET_KEY, req);
+};
+
+/**
  * Generates an email verification token
  * @param {string} email - User's email
  * @param {string} _id - User's unique identifier
@@ -133,4 +144,5 @@ module.exports = {
 	validateAccessToken,
 	validateRefreshToken,
 	generateEmailVerificationToken,
+	validateEmailVerificationToken
 };

@@ -1,4 +1,4 @@
-const { handleError: logAndHandleError } = require('../utils/errorHandler');
+const { handleError } = require('../utils/errorHandler');
 const { INTERNAL_SERVER_ERROR } = require('../config/errorCodes');
 
 /**
@@ -8,7 +8,7 @@ const { INTERNAL_SERVER_ERROR } = require('../config/errorCodes');
  * @param {Error} error - The error object
  * @param {{ name: string, type: string }} file - The file specs sending log
  */
-const handleError = (req, res, error, file) => {
+const handleControllerError = (req, res, error, file) => {
 	const errorObj = {
 		res,
 		errorCode: error.loppouError?.errorCode || INTERNAL_SERVER_ERROR,
@@ -17,7 +17,7 @@ const handleError = (req, res, error, file) => {
 		message: error.loppouError?.message || 'Something went wrong on the server'
 	};
 
-	logAndHandleError(errorObj, {
+	handleError(errorObj, {
 		level: !!error.loppouError ? 'warn' : 'error',
 		req,
 		file,
@@ -26,4 +26,4 @@ const handleError = (req, res, error, file) => {
 	});
 };
 
-module.exports = { handleError };
+module.exports = { handleControllerError };

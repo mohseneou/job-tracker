@@ -5,5 +5,7 @@ module.exports = {
 		EMAIL_IN_USE: 'auth_01',
 		TOKEN_EXPIRED: 'auth_02',
 		TOKEN_INVALID: 'auth_03',
+		USER_NOT_FOUND: 'auth_04',
+		ALREADY_VERIFIED: 'auth_05',
 	}
 };

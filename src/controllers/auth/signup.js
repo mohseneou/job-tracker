@@ -6,9 +6,9 @@ const Profile = require('../../models/profile');
 
 const { generateAuthTokens, generateEmailVerificationToken } = require('../../services/token');
 const logger = require('../../utils/logger');
-const { handleError } = require('../errorHandler');
-const { FILE_TYPES, HASH_SALT_ROUNDS, CLIENT_URL } = require('../../config');
-const { INTERNAL_SERVER_ERROR, AUTH_ERRORS } = require('../../config/errorCodes');
+const { handleControllerError } = require('../errorHandler');
+const { FILE_TYPES, HASH_SALT_ROUNDS, API_URL } = require('../../config');
+const { AUTH_ERRORS } = require('../../config/errorCodes');
 const sendEmail = require('../../utils/sendMail');
 
 const generateVerificationEmail = (verificationToken, user, req = {}) => {
@@ -17,7 +17,7 @@ const generateVerificationEmail = (verificationToken, user, req = {}) => {
 		intermediateData: { verificationToken, user },
 	});
 
-	const verificationLink = `${CLIENT_URL}/verify-email/${verificationToken}`;
+	const verificationLink = `${API_URL}/auth/verify-email/${verificationToken}`;
 
 	const textContent = `Hello ${user.name},
 Please verify your email by clicking the link below:
@@ -57,7 +57,7 @@ const signup = async (req, res) => {
 		// Check if user already exists
 		const existingUser = await User.findOne({ email: email.toLowerCase() });
 		if (existingUser) {
-			return handleError({
+			return handleControllerError({
 				res, status: 400, fieldName: 'email', errorCode: AUTH_ERRORS.EMAIL_IN_USE, message: 'Email is already in use'
 			}, {
 				level: 'info',
@@ -126,7 +126,7 @@ const signup = async (req, res) => {
 		});
 
 	} catch (error) {
-		handleError(req, res, error, { name: __filename, type: FILE_TYPES.CONTROLLER });
+		handleControllerError(req, res, error, { name: __filename, type: FILE_TYPES.CONTROLLER });
 	} finally {
 		if (session) {
 			session.endSession();
