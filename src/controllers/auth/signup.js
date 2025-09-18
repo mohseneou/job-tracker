@@ -4,12 +4,46 @@ const mongoose = require('mongoose');
 const User = require('../../models/user');
 const Profile = require('../../models/profile');
 
-const { generateAuthTokens } = require('../../services/token');
+const { generateAuthTokens, generateEmailVerificationToken } = require('../../services/token');
 const logger = require('../../utils/logger');
 const { handleError } = require('../../utils/errorHandler');
-const { FILE_TYPES, HASH_SALT_ROUNDS } = require('../../config');
+const { FILE_TYPES, HASH_SALT_ROUNDS, CLIENT_URL } = require('../../config');
 const { INTERNAL_SERVER_ERROR, AUTH_ERRORS } = require('../../config/errorCodes');
+const sendEmail = require('../../utils/sendMail');
 
+const generateVerificationEmail = (verificationToken, user, req = {}) => {
+	logger.verbose('Generating email verification content', {
+		req, file: { name: __filename, type: FILE_TYPES.CONTROLLER },
+		intermediateData: { verificationToken, user },
+	});
+
+	const verificationLink = `${CLIENT_URL}/verify-email/${verificationToken}`;
+
+	const textContent = `Hello ${user.name},
+Please verify your email by clicking the link below:
+${verificationLink}
+If you did not create an account, please ignore this email.
+Thank you!`;
+
+	const htmlContent = `<p>Hello ${user.name},</p>
+<p>Please verify your email by clicking the link below:</p>
+<p><a href="${verificationLink}">Verify Email</a></p>
+<p>If you did not create an account, please ignore this email.</p>
+<p>Thank you!</p>`;
+
+	logger.verbose('Generated email verification content', {
+		req, file: { name: __filename, type: FILE_TYPES.CONTROLLER },
+		intermediateData: { textContent },
+	});
+
+	return { text: textContent, html: htmlContent };
+};
+
+/**
+ * User signup controller
+ * @param {import('express').Request} req - The request object
+ * @param {import('express').Response} res - The response object
+ */
 const signup = async (req, res) => {
 	const { name, email, password } = req.body;
 
@@ -63,6 +97,18 @@ const signup = async (req, res) => {
 				req, file: { name: __filename, type: FILE_TYPES.CONTROLLER },
 				intermediateData: { newProfile },
 			});
+
+			// Generate email verification token
+			const emailVerificationToken = generateEmailVerificationToken(newUser.email, newUser._id.toString(), req);
+
+			// Send verification email
+			const verificationEmailContent = generateVerificationEmail(emailVerificationToken, newUser, req);
+			await sendEmail({
+				to: newUser.email,
+				subject: 'Verify your email',
+				text: verificationEmailContent.text,
+				html: verificationEmailContent.html,
+			}, req);
 
 			// Now generate tokens and send response
 			const tokens = generateAuthTokens(newUser.email, newUser._id.toString(), newUser.role, req);

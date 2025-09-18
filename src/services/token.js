@@ -5,6 +5,8 @@ const {
 	JWT_REFRESH_EXPIRATION,
 	JWT_ACCESS_SECRET_KEY,
 	JWT_REFRESH_SECRET_KEY,
+	JWT_EMAIL_VERIFICATION_EXPIRATION,
+	JWT_EMAIL_VERIFICATION_SECRET_KEY,
 	FILE_TYPES,
 } = require('../config');
 const logger = require('../utils/logger');
@@ -101,8 +103,36 @@ const validateAccessToken = (token, req = {}) => {
 	return validateToken(token, JWT_ACCESS_SECRET_KEY, req);
 };
 
+/**
+ * Generates an email verification token
+ * @param {string} email - User's email
+ * @param {string} _id - User's unique identifier
+ * @param {import('express').Request} req - The request object for logging context
+ * @returns {string} - The email verification token
+ */
+const generateEmailVerificationToken = (email, _id, req = {}) => {
+	logger.verbose('Generating email verification token', {
+		req, file: { name: __filename, type: FILE_TYPES.SERVICE },
+		intermediateData: { email, _id },
+	});
+
+	const emailToken = jwt.sign(
+		{ email, _id },
+		JWT_EMAIL_VERIFICATION_SECRET_KEY,
+		{ expiresIn: JWT_EMAIL_VERIFICATION_EXPIRATION }
+	);
+
+	logger.info('Generated email verification token', {
+		req, file: { name: __filename, type: FILE_TYPES.SERVICE },
+		intermediateData: { emailToken },
+	});
+
+	return emailToken;
+};
+
 module.exports = {
 	generateAuthTokens,
 	validateAccessToken,
 	validateRefreshToken,
+	generateEmailVerificationToken,
 };
