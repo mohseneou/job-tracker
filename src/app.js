@@ -5,6 +5,11 @@ const cors = require('cors');
 const logger = require('./utils/logger');
 const { FILE_TYPES } = require('./config');
 
+// Loaders
+const connectDB = require('./loaders/db');
+
+connectDB();
+
 // Import routes
 const routes = require('./routes');
 

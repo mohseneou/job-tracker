@@ -26,6 +26,10 @@ const schema = new mongoose.Schema(
 			enum: ['user', 'job-poster', 'admin'],
 			default: 'user'
 		},
+		emailVerified: {
+			type: Boolean,
+			default: false
+		}
 	},
 	{ timestamps: true }
 );

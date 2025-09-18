@@ -15,6 +15,7 @@ module.exports = {
 	LOGGER_HOST_NAME: process.env.LOGGER_HOST_NAME,
 	LOGGER_DEPLOYMENT_ENVIRONMENT: process.env.LOGGER_DEPLOYMENT_ENVIRONMENT,
 	LOGGER_URL: process.env.LOGGER_URL,
+	HASH_SALT_ROUNDS: +process.env.HASH_SALT_ROUNDS || 10,
 	// Used in logs
 	FILE_TYPES: {
 		MIDDLEWARE: 'MIDDLEWARE',
@@ -25,5 +26,6 @@ module.exports = {
 		VALIDATOR: 'VALIDATOR',
 		HELPER: 'HELPER',
 		APP: 'APP',
+		LOADER: 'LOADER',
 	}
 };
