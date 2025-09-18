@@ -1,0 +1,20 @@
+{
+  "name": "job-tracker",
+  "version": "1.0.0",
+  "description": "A platform for finding job applications and applying",
+  "homepage": "https://github.com/mohseneou/job-tracker#readme",
+  "bugs": {
+    "url": "https://github.com/mohseneou/job-tracker/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mohseneou/job-tracker.git"
+  },
+  "license": "ISC",
+  "author": "Mohsen Einlou",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
