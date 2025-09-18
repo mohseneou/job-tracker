@@ -58,23 +58,21 @@ const validateToken = (token, secret, req = {}) => {
 		return jwt.verify(token, secret);
 	} catch (error) {
 		if (error.name === 'TokenExpiredError') {
-      throw new Error({
-				loppouError: true,
-				error: {
+      throw {
+				loppouError: {
 					errorCode: AUTH_ERRORS.TOKEN_EXPIRED,
 					message: 'Token has expired',
 					code: 401,
 				}
-			})
+			}
     } else if (error.name === 'JsonWebTokenError') {
-      throw new Error({
-				loppouError: true,
-				error: {
+      throw {
+				loppouError: {
 					errorCode: AUTH_ERRORS.TOKEN_INVALID,
 					message: 'Token is invalid',
 					code: 401,
 				}
-			})
+			}
     } else {
       throw error
     }

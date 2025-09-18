@@ -6,7 +6,7 @@ const Profile = require('../../models/profile');
 
 const { generateAuthTokens, generateEmailVerificationToken } = require('../../services/token');
 const logger = require('../../utils/logger');
-const { handleError } = require('../../utils/errorHandler');
+const { handleError } = require('../errorHandler');
 const { FILE_TYPES, HASH_SALT_ROUNDS, CLIENT_URL } = require('../../config');
 const { INTERNAL_SERVER_ERROR, AUTH_ERRORS } = require('../../config/errorCodes');
 const sendEmail = require('../../utils/sendMail');
@@ -126,14 +126,7 @@ const signup = async (req, res) => {
 		});
 
 	} catch (error) {
-		handleError({
-			res, status: 500, errorCode: INTERNAL_SERVER_ERROR, message: 'Something went wrong on the server'
-		}, {
-			level: 'error',
-			req, file: { name: __filename, type: FILE_TYPES.CONTROLLER },
-			message: 'Caught error',
-			error,
-		});
+		handleError(req, res, error, { name: __filename, type: FILE_TYPES.CONTROLLER });
 	} finally {
 		if (session) {
 			session.endSession();
