@@ -7,5 +7,6 @@ module.exports = {
 		TOKEN_INVALID: 'auth_03',
 		USER_NOT_FOUND: 'auth_04',
 		ALREADY_VERIFIED: 'auth_05',
+		INVALID_CREDENTIALS: 'auth_06',
 	}
 };

@@ -55,7 +55,7 @@ const verifyEmail = async (req, res) => {
 			response
 		});
 
-		res.status(200).json(response);
+		res.status(200).send(response);
 	} catch (error) {
 		handleControllerError(req, res, error, { name: __filename, type: FILE_TYPES.CONTROLLER });
 	}

@@ -121,7 +121,7 @@ const signup = async (req, res) => {
 				intermediateData: { newUser, newProfile },
 			});
 
-			res.status(201).json(response);
+			res.status(201).send(response);
 
 		});
 
