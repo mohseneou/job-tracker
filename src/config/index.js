@@ -1,0 +1,28 @@
+const path = require('path');
+require('dotenv').config(path.join(__dirname, '../.env'));
+
+module.exports = {
+  PORT: +process.env.PORT,
+  NODE_ENVIRONMENT: process.env.NODE_ENVIRONMENT,
+  MONGO_CONNECTION_STRING: process.env.MONGO_CONNECTION_STRING,
+  MAIL_SENDER_USER: process.env.MAIL_SENDER_USER,
+  MAIL_SENDER_PASS: process.env.MAIL_SENDER_PASS,
+  MAIL_SENDER_ADDRESS: process.env.MAIL_SENDER_ADDRESS,
+  MAIL_HOST: process.env.MAIL_HOST,
+  MAIL_PORT: +process.env.MAIL_PORT,
+  MAIL_SENDER_NAME: process.env.MAIL_SENDER_NAME,
+  LOGGER_SERVICE_NAME: process.env.LOGGER_SERVICE_NAME,
+	LOGGER_HOST_NAME: process.env.LOGGER_HOST_NAME,
+	LOGGER_DEPLOYMENT_ENVIRONMENT: process.env.LOGGER_DEPLOYMENT_ENVIRONMENT,
+	LOGGER_URL: process.env.LOGGER_URL,
+	// Used in logs
+	FILE_TYPES: {
+		MIDDLEWARE: 'MIDDLEWARE',
+		SERVICE: 'SERVICE',
+		CONTROLLER: 'CONTROLLER',
+		ROUTER: 'ROUTER',
+		UTIL: 'UTIL',
+		VALIDATOR: 'VALIDATOR',
+		HELPER: 'HELPER'
+	}
+};
