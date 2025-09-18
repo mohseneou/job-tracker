@@ -23,6 +23,7 @@ module.exports = {
 		ROUTER: 'ROUTER',
 		UTIL: 'UTIL',
 		VALIDATOR: 'VALIDATOR',
-		HELPER: 'HELPER'
+		HELPER: 'HELPER',
+		APP: 'APP',
 	}
 };
