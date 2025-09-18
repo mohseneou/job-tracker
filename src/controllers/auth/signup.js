@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const User = require('../../models/user');
 const Profile = require('../../models/profile');
 
+const { generateAuthTokens } = require('../../services/token');
 const logger = require('../../utils/logger');
 const { handleError } = require('../../utils/errorHandler');
 const { FILE_TYPES, HASH_SALT_ROUNDS } = require('../../config');
@@ -38,7 +39,7 @@ const signup = async (req, res) => {
 			req, file: { name: __filename, type: FILE_TYPES.CONTROLLER },
 		});
 
-		// Create a new user and profile document
+		// Use transaction to ensure both user and profile are created
 		await session.withTransaction(async () => {
 			// Create a new user
 			const hashedPassword = await bcrypt.hash(password, HASH_SALT_ROUNDS);
@@ -63,8 +64,11 @@ const signup = async (req, res) => {
 				intermediateData: { newProfile },
 			});
 
-			const response = { user: { name, email, _id: newUser._id } };
-	
+			// Now generate tokens and send response
+			const tokens = generateAuthTokens(newUser.email, newUser._id.toString(), newUser.role, req);
+
+			const response = { user: { name, email, _id: newUser._id }, tokens };
+		
 			logger.info('User signup process completed successfully', {
 				req, file: { name: __filename, type: FILE_TYPES.CONTROLLER },
 				response: response,
