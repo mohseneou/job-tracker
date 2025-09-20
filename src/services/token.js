@@ -11,6 +11,7 @@ const {
 } = require('../config');
 const logger = require('../utils/logger');
 const { AUTH_ERRORS } = require('../config/errorCodes');
+const { CustomError } = require('../utils/errorHandler');
 
 /**
  * Generates access and refresh tokens for a user
@@ -55,24 +56,24 @@ const generateAuthTokens = (email, _id, role, req = {}) => {
  */
 const validateToken = (token, secret, req = {}) => {
 	try {
-		return jwt.verify(token, secret);
+		logger.debug('Verifying token', {
+			req, file: { name: __filename, type: FILE_TYPES.SERVICE },
+			intermediateData: { token },
+		});
+
+		const decoded = jwt.verify(token, secret);
+
+		logger.debug('Verified token successfully', {
+			req, file: { name: __filename, type: FILE_TYPES.SERVICE },
+			intermediateData: { token, decoded },
+		});
+
+		return decoded
 	} catch (error) {
 		if (error.name === 'TokenExpiredError') {
-      throw {
-				loppouError: {
-					errorCode: AUTH_ERRORS.TOKEN_EXPIRED,
-					message: 'Token has expired',
-					code: 401,
-				}
-			}
+      throw CustomError('Token has expired', AUTH_ERRORS.TOKEN_EXPIRED, 401);
     } else if (error.name === 'JsonWebTokenError') {
-      throw {
-				loppouError: {
-					errorCode: AUTH_ERRORS.TOKEN_INVALID,
-					message: 'Token is invalid',
-					code: 401,
-				}
-			}
+      throw CustomError('Token is invalid', AUTH_ERRORS.TOKEN_INVALID, 401);
     } else {
       throw error
     }

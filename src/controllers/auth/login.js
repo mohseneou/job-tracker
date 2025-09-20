@@ -4,8 +4,7 @@ const User = require('../../models/user');
 
 const logger = require('../../utils/logger');
 const { FILE_TYPES } = require('../../config');
-const { handleControllerError } = require('../errorHandler');
-const { handleError } = require('../../utils/errorHandler');
+const { CustomError, handleError } = require('../../utils/errorHandler');
 const { AUTH_ERRORS } = require('../../config/errorCodes');
 const { generateAuthTokens } = require('../../services/token');
 
@@ -25,16 +24,7 @@ const login = async (req, res) => {
 		// Check if user exists
 		const user = await User.findOne({ email });
 		if (!user) {
-			return handleError({
-				res,
-				message: 'Invalid credentials',
-				statusCode: 404,
-				errorCode: AUTH_ERRORS.INVALID_CREDENTIALS,
-			}, {
-				req, file: { name: __filename, type: FILE_TYPES.CONTROLLER },
-				message: 'Email does not exist',
-				level: 'info',
-			});
+			throw CustomError('Invalid credentials', AUTH_ERRORS.INVALID_CREDENTIALS, 404);
 		}
 
 		logger.verbose('Found user on database', {
@@ -45,16 +35,7 @@ const login = async (req, res) => {
 		// Check if password is correct
 		const isMatch = bcrypt.compareSync(password, user.password);
 		if (!isMatch) {
-			return handleError({
-				res,
-				message: 'Invalid credentials',
-				statusCode: 404,
-				errorCode: AUTH_ERRORS.INVALID_CREDENTIALS,
-			}, {
-				req, file: { name: __filename, type: FILE_TYPES.CONTROLLER },
-				message: 'Password is incorrect',
-				level: 'info',
-			});
+			throw CustomError('Invalid credentials', AUTH_ERRORS.INVALID_CREDENTIALS, 404);
 		}
 
 		// Generate auth tokens
@@ -71,7 +52,7 @@ const login = async (req, res) => {
 		res.status(200).send(response);
 
 	} catch (error) {
-		handleControllerError(req, res, error, { name: __filename, type: FILE_TYPES.CONTROLLER });
+		handleError(req, res, error, { name: __filename, type: FILE_TYPES.CONTROLLER });
 	}
 };
 

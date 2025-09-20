@@ -2,9 +2,8 @@ const User = require('../../models/user');
 
 const logger = require('../../utils/logger');
 const { FILE_TYPES } = require('../../config');
-const { handleControllerError } = require('../errorHandler');
 const { validateEmailVerificationToken } = require('../../services/token');
-const { handleError } = require('../../utils/errorHandler');
+const { CustomError, handleError } = require('../../utils/errorHandler');
 const { AUTH_ERRORS } = require('../../config/errorCodes');
 
 /**
@@ -26,22 +25,12 @@ const verifyEmail = async (req, res) => {
 		// Check if user exists
 		const user = await User.findById(decoded._id);
 		if (!user) {
-			return handleError({
-				res, message: 'User not found', statusCode: 404, errorCode: AUTH_ERRORS.USER_NOT_FOUND
-			}, {
-				req, file: { name: __filename, type: FILE_TYPES.CONTROLLER },
-				intermediateData: { decoded }
-			});
+			throw CustomError('User not found', AUTH_ERRORS.USER_NOT_FOUND, 404, undefined, { intermediateData: { decoded } });
 		}
 
 		// Check if email is already verified
 		if (user.emailVerified) {
-			return handleError({
-				res, message: 'Email is already verified', statusCode: 400, errorCode: AUTH_ERRORS.ALREADY_VERIFIED
-			}, {
-				req, file: { name: __filename, type: FILE_TYPES.CONTROLLER },
-				intermediateData: { user }
-			});
+			throw CustomError('Email is already verified', AUTH_ERRORS.ALREADY_VERIFIED, 400, undefined, { intermediateData: { user } });
 		}
 
 		// Update user's record in database to mark the email as verified
@@ -57,7 +46,7 @@ const verifyEmail = async (req, res) => {
 
 		res.status(200).send(response);
 	} catch (error) {
-		handleControllerError(req, res, error, { name: __filename, type: FILE_TYPES.CONTROLLER });
+		handleError(req, res, error, { name: __filename, type: FILE_TYPES.CONTROLLER });
 	}
 };
 

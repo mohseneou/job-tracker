@@ -1,6 +1,6 @@
 const { isString, isEmail } = require('../validators');
 const ckeckForErrors = require('../checkForErrors');
-const { handleError } = require('../../utils/errorHandler');
+const { logAndRespond } = require('../../utils/errorHandler');
 const { INVALID_INPUT } = require('../../config/errorCodes');
 const { FILE_TYPES } = require('../../config');
 
@@ -21,7 +21,7 @@ const signupValidator = (req, res, next) => {
 	
 	// If there are errors, return 422 with the error message
 	if (!result.valid) {
-		return handleError({
+		return logAndRespond({
 			res, statusCode: 422, message: result.message, errorCode: INVALID_INPUT 
 		}, {
 			req, file: { name: __filename, type: FILE_TYPES.VALIDATOR },

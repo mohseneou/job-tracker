@@ -6,7 +6,7 @@ const Profile = require('../../models/profile');
 
 const { generateAuthTokens, generateEmailVerificationToken } = require('../../services/token');
 const logger = require('../../utils/logger');
-const { handleControllerError } = require('../errorHandler');
+const { CustomError, handleError } = require('../../utils/errorHandler');
 const { FILE_TYPES, HASH_SALT_ROUNDS, API_URL } = require('../../config');
 const { AUTH_ERRORS } = require('../../config/errorCodes');
 const sendEmail = require('../../utils/sendMail');
@@ -55,15 +55,9 @@ const signup = async (req, res) => {
 
 	try {
 		// Check if user already exists
-		const existingUser = await User.findOne({ email: email.toLowerCase() });
+		const existingUser = await User.findOne({ email: email.toLowerCase() }).lean();
 		if (existingUser) {
-			return handleControllerError({
-				res, status: 400, fieldName: 'email', errorCode: AUTH_ERRORS.EMAIL_IN_USE, message: 'Email is already in use'
-			}, {
-				level: 'info',
-				req, file: { name: __filename, type: FILE_TYPES.CONTROLLER },
-				message: 'Attempt to register with an existing email',
-			});
+			throw CustomError('Email is already in use', AUTH_ERRORS.EMAIL_IN_USE, 400, undefined, { intermediateData: { existingUser }, level: 'info' });
 		}
 
 		// Create a session for transaction
@@ -126,7 +120,7 @@ const signup = async (req, res) => {
 		});
 
 	} catch (error) {
-		handleControllerError(req, res, error, { name: __filename, type: FILE_TYPES.CONTROLLER });
+		handleError(req, res, error, { name: __filename, type: FILE_TYPES.CONTROLLER });
 	} finally {
 		if (session) {
 			session.endSession();
