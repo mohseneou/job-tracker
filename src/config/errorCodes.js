@@ -8,5 +8,9 @@ module.exports = {
 		USER_NOT_FOUND: 'auth_04',
 		ALREADY_VERIFIED: 'auth_05',
 		INVALID_CREDENTIALS: 'auth_06',
+		NO_TOKEN_PROVIDED: 'auth_07',
+	},
+	USER_ERRORS: {
+		USER_NOT_FOUND: 'usr_01',
 	}
 };
