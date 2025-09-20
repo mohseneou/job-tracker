@@ -1,9 +1,18 @@
 /**
  * Validates if the provided value is a non-empty string.
  * @param {any} value - The value to be checked. 
+ * @param {number} [maxLength] - Optional maximum length for the string.
  * @returns {boolean} - Returns true if the value is a non-empty string, otherwise false.
  */
-const isString = (value) => typeof value === 'string' && value.trim() !== '';
+const isString = (value, maxLength) => {
+	if (typeof value !== 'string' || value.trim() === '') {
+		return false;
+	}
+	if (maxLength && value.length > maxLength) {
+		return false;
+	}
+	return true;
+};
 
 /**
  * Validates if the provided value is in a valid email format.
@@ -34,9 +43,17 @@ const isURL = (value) => {
 	}
 };
 
+/**
+ * Validates if the provided value is an array of strings.
+ * @param {any} arr - The value to be checked 
+ * @returns {boolean} - Returns true if the value is an array of strings, otherwise false.
+ */
+isStringArray = (arr) => Array.isArray(arr) && arr.every(isString);
+
 module.exports = {
 	isString,
 	isEmail,
 	isInEnum,
-	isURL
+	isURL,
+	isStringArray
 };

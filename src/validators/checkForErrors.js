@@ -1,5 +1,3 @@
-const logger = require('../utils/logger');
-
 /**
  * 
  * @param {{ [field: string]: { required: boolean, validator: () => boolean } }} fields 

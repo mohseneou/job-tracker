@@ -41,6 +41,8 @@ app.use((err, req, res, next) => {
 		error: err
 	});
 
+	console.error(err);
+
 	res.status(500).send(response);
 });
 

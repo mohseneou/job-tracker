@@ -12,5 +12,6 @@ module.exports = {
 	},
 	USER_ERRORS: {
 		USER_NOT_FOUND: 'usr_01',
+		USER_PROFILE_NOT_FOUND: 'usr_02',
 	}
 };

@@ -11,13 +11,13 @@ const { validateAccessToken } = require('../services/token');
  */
 const auth = (req, res, next) => {
 	const token = req.header('Authorization')	? req.header('Authorization').replace('Bearer ', '') : null;
-
-	// Respond with 401 if no token is provided
-	if (!token) {
-		throw CustomError('No token, authorization denied', AUTH_ERRORS.NO_TOKEN_PROVIDED, 401);
-	}
 	
 	try {
+		// Respond with 401 if no token is provided
+		if (!token) {
+			throw CustomError('No token, authorization denied', AUTH_ERRORS.NO_TOKEN_PROVIDED, 401);
+		}
+
 		// Verify token
 		const decoded = validateAccessToken(token, req);
 
