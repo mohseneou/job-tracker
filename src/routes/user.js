@@ -9,7 +9,7 @@ const updateProfileController = require('../controllers/user/updateProfile');
 
 const router = express.Router();
 
-router.get('/info', auth, infoController);
-router.patch('/update-profile', auth, updateProfileValidator, updateProfileController);
+router.get('/info', auth.accessToken, infoController);
+router.patch('/update-profile', auth.accessToken, updateProfileValidator, updateProfileController);
 
 module.exports = router;
