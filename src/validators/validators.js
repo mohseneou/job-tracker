@@ -48,12 +48,22 @@ const isURL = (value) => {
  * @param {any} arr - The value to be checked 
  * @returns {boolean} - Returns true if the value is an array of strings, otherwise false.
  */
-isStringArray = (arr) => Array.isArray(arr) && arr.every(isString);
+const isStringArray = (arr) => Array.isArray(arr) && arr.every(isString);
+
+/**
+ * Validates if the provided value is a number
+ * @param {any} value - The value to be checked 
+ * @param {number} min - Define min threshold
+ * @param {number} max - Define min threshold
+ * @returns {boolean} - Returns true if the provided value is a number between the defined range, false otherwise
+ */
+const isNumber = (value, min = -Infinity, max = Infinity) => !isNaN(value) && value <= max && value >= min; 
 
 module.exports = {
 	isString,
 	isEmail,
 	isInEnum,
 	isURL,
-	isStringArray
+	isStringArray,
+	isNumber
 };

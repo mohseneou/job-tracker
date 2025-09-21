@@ -13,5 +13,8 @@ module.exports = {
 	USER_ERRORS: {
 		USER_NOT_FOUND: 'usr_01',
 		USER_PROFILE_NOT_FOUND: 'usr_02',
-	}
+	},
+	COMPANY_ERRORS: {
+		ALREADY_JOB_POSTER: 'cmp_01'
+	},
 };
