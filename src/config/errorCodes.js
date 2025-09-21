@@ -14,6 +14,7 @@ module.exports = {
 		USER_NOT_FOUND: 'usr_01',
 		USER_PROFILE_NOT_FOUND: 'usr_02',
 		ADMIN_NOT_FOUND: 'usr_03',
+		EMAIL_IS_NOT_VERIFIED: 'usr_04',
 	},
 	COMPANY_ERRORS: {
 		ALREADY_JOB_POSTER: 'cmp_01',

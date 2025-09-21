@@ -36,7 +36,6 @@ const schema = new mongoose.Schema({
 	adminNotes: {
 		admin: {
 			type: mongoose.Schema.Types.ObjectId,
-			required: true,
 			ref: 'User',
 		},
 		note: {
