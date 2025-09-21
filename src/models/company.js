@@ -33,6 +33,19 @@ const schema = new mongoose.Schema({
 		enum: ['pending', 'apprived', 'rejected'],
 		default: 'pending'
 	},
+	adminNotes: {
+		admin: {
+			type: mongoose.Schema.Types.ObjectId,
+			required: true,
+			ref: 'User',
+		},
+		note: {
+			type: String,
+		},
+		updatedAt: {
+			type: Date,
+		}
+	}
 }, { timestamps: true });
 
 const Company = mongoose.model('Company', schema);

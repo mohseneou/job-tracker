@@ -1,3 +1,5 @@
+const mongoose = require('mongoose');
+
 /**
  * Validates if the provided value is a non-empty string.
  * @param {any} value - The value to be checked. 
@@ -57,7 +59,14 @@ const isStringArray = (arr) => Array.isArray(arr) && arr.every(isString);
  * @param {number} max - Define min threshold
  * @returns {boolean} - Returns true if the provided value is a number between the defined range, false otherwise
  */
-const isNumber = (value, min = -Infinity, max = Infinity) => !isNaN(value) && value <= max && value >= min; 
+const isNumber = (value, min = -Infinity, max = Infinity) => !isNaN(value) && value <= max && value >= min;
+
+/**
+ * Validates if the provided value is a valid mongoose object id
+ * @param {any} value - The value to be checked 
+ * @returns {boolean} - Returns true if the provided value is valid object id, false otherwise
+ */
+const isObjectId = value => mongoose.Types.ObjectId.isValid(value);
 
 module.exports = {
 	isString,
@@ -65,5 +74,6 @@ module.exports = {
 	isInEnum,
 	isURL,
 	isStringArray,
-	isNumber
+	isNumber,
+	isObjectId
 };

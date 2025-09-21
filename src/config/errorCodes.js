@@ -13,8 +13,14 @@ module.exports = {
 	USER_ERRORS: {
 		USER_NOT_FOUND: 'usr_01',
 		USER_PROFILE_NOT_FOUND: 'usr_02',
+		ADMIN_NOT_FOUND: 'usr_03',
 	},
 	COMPANY_ERRORS: {
-		ALREADY_JOB_POSTER: 'cmp_01'
+		ALREADY_JOB_POSTER: 'cmp_01',
+		COMPANY_NOT_FOUND: 'cmp_02',
+		COMPANY_IS_NOT_PENDING: 'cmp_03',
+	},
+	ROLE_ERRORS: {
+		ACCESS_DENIED: 'role_01'
 	},
 };
