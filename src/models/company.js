@@ -30,7 +30,7 @@ const schema = new mongoose.Schema({
 	},
 	status: {
 		type: String,
-		enum: ['pending', 'apprived', 'rejected'],
+		enum: ['pending', 'approved', 'rejected'],
 		default: 'pending'
 	},
 	adminNotes: {

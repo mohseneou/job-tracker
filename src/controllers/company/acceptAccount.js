@@ -10,29 +10,31 @@ const logger = require('../../utils/logger');
 const sendEmail = require('../../utils/sendMail');
 
 /**
- * Generate job poster account request rejection email
+ * Generate job poster account request approval email
  * @param {import('../../models/user').schema} user - User object who requested the account
  * @param {import('../../models/user').schema} admin - The company object 
  * @param {import('express').Request} req - Express request object (for logging)
  * @returns {{ text: string, html: string }} - Email body content
  */
 const generateRejectionEmail = (user, admin, note, req = {}) => {
-	logger.verbose('Generating rejection email content', {
+	logger.verbose('Generating company account approval email content', {
 		req, file: { name: __filename, type: FILE_TYPES.CONTROLLER },
 		intermediateData: { admin, user },
 	});
 
 	const textContent = `Hello ${user.name},
-Your job poster account request has been rejected by ${admin.name}.
-You can find more about why this happened below. You can edit and re-submit your request now.
-${note} `;
+Your job poster account request has been approved by ${admin.name}.
+Here is some notes our admins have submitted reviewing your request.
+${note}
+You can now re-login to your account to post jobs and review submissions.`;
 
 	const htmlContent = `<p>Hello ${user.name},</p>
-<p>Your job poster account request has been rejected by ${admin.name}.</p>
-<p>You can find more about why this happened below. You can edit and re-submit your request now.</p>
-<p>${note}.</p>`;
+<p>Your job poster account request has been approved by ${admin.name}.</p>
+<p>Here is some notes our admins have submitted reviewing your request.</p>
+<p>${note}.</p>
+<p>You can now re-login to your account to post jobs and review submissions.</p>`;
 
-	logger.verbose('Generated rejection email content', {
+	logger.verbose('Generated company account approval email content', {
 		req, file: { name: __filename, type: FILE_TYPES.CONTROLLER },
 		intermediateData: { textContent },
 	});
@@ -41,16 +43,16 @@ ${note} `;
 };
 
 /**
- * Reject a company account request
+ * Approve a company account request
  * @param {import('express').Request} req - Express request object
  * @param {import('express').Response} res - Express request object
  */
-const rejectAccount = async (req, res) => {
+const acceptAccount = async (req, res) => {
 	// Define mongoose session outside catch block
 	let session;
 
 	try {
-		logger.info('Start rejecting company account request', {
+		logger.info('Start approving company account request', {
 			req, file: { name: __filename, type: FILE_TYPES.CONTROLLER },
 		});
 
@@ -68,7 +70,7 @@ const rejectAccount = async (req, res) => {
 		const { note, company: companyId } = req.body;
 
 		// Now check if the company exists
-		const company = await Company.findById(companyId);
+		const company = await Company.findById(companyId).populate('user');
 		if (!company) {
 			throw CustomError('Company not found', COMPANY_ERRORS.COMPANY_NOT_FOUND, 404);
 		}
@@ -83,17 +85,14 @@ const rejectAccount = async (req, res) => {
 			throw CustomError('Company is not in pending state', COMPANY_ERRORS.COMPANY_IS_NOT_PENDING, 400, undefined, { intermediateData: { company } });
 		}
 
-		// Find user on database
-		const user = await User.findById(company.user).lean();
-
 		// Start a mongoose session
 		session = await mongoose.startSession();
 
 		// Update company object and send an email to user in a session
 		await session.withTransaction(async () => {
 
-			// Update company status to rejecetd and insert admin notes
-			company.status = 'rejected';
+			// Update company status to approved and insert admin notes
+			company.status = 'approved';
 			company.adminNotes = {
 				admin: admin._id,
 				updatedAt: Date.now(),
@@ -102,21 +101,24 @@ const rejectAccount = async (req, res) => {
 
 			await company.save({ session });
 
+			// Update user role to job-poster
+			await User.updateOne({ _id: company.user._id }, { role: 'job-poster' }, { session });
+
 			// Send an email to the user requesting job poster account
-			const emailContent = generateRejectionEmail(user, admin, note, req);
+			const emailContent = generateRejectionEmail(company.user, admin, note, req);
 
 			await sendEmail({
-				to: user.email,
-				subject: 'Job poster account request rejected',
+				to: company.user.email,
+				subject: 'Job poster account request approved',
 				html: emailContent.html,
 				text: emailContent.text
 			}, req);
 
-			const response = { message: 'Rejected company request successfully' };
+			const response = { message: 'Approved company request successfully' };
 
-			logger.info('Rejected company request successfully', {
+			logger.info('Approved company request successfully', {
 				req, file: { name: __filename, type: FILE_TYPES.CONTROLLER },
-				intermediateData: { user, admin, company },
+				intermediateData: { user: company.user, admin, company },
 				output: response,
 			});
 
@@ -135,4 +137,4 @@ const rejectAccount = async (req, res) => {
 	}
 };
 
-module.exports = rejectAccount;
+module.exports = acceptAccount;
