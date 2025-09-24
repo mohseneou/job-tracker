@@ -20,6 +20,7 @@ module.exports = {
 		ALREADY_JOB_POSTER: 'cmp_01',
 		COMPANY_NOT_FOUND: 'cmp_02',
 		COMPANY_IS_NOT_PENDING: 'cmp_03',
+		COMPANY_IS_NOT_REJECTED: 'cmp_04',
 	},
 	ROLE_ERRORS: {
 		ACCESS_DENIED: 'role_01'
