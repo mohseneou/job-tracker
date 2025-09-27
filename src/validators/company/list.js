@@ -1,28 +1,31 @@
-const { isString, isStringArray, isURL } = require('../validators');
+const { isSelect, isNumber, isSort, isString } = require('../validators');
 const ckeckForErrors = require('../checkForErrors');
 const { logAndRespond } = require('../../utils/errorHandler');
 const { INVALID_INPUT } = require('../../config/errorCodes');
 const { FILE_TYPES } = require('../../config');
 
 const fields = {
-	resumeURL: {
-		validator: isURL,
+	sort: {
+		validator: isSort
 	},
-	coverLetter: {
-		validator: v => isString(v, 1000)
+	page: {
+		validator: v => isNumber(v, 1)
 	},
-	skills: {
-		validator: isStringArray,
+	limit: {
+		validator: v => isNumber(v, 1)
 	},
-	LinkedInURL: {
-		validator: isURL,
+	select: {
+		validator: isSelect
+	},
+	status: {
+		validator: isString
 	},
 };
 
-const updateProfile = (req, res, next) => {
+const list = (req, res, next) => {
 	// Check for errors
-	const result = ckeckForErrors(fields, req.body);
-	
+	const result = ckeckForErrors(fields, req.query);
+
 	// If there are errors, return 422 with the error message
 	if (!result.valid) {
 		return logAndRespond({
@@ -35,4 +38,4 @@ const updateProfile = (req, res, next) => {
 	next();
 };
 
-module.exports = updateProfile;
+module.exports = list;

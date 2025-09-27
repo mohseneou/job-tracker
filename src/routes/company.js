@@ -16,11 +16,16 @@ const rejectAccountValidator = require('../validators/company/rejectAccount');
 const acceptAccountController = require('../controllers/company/acceptAccount');
 const acceptAccountValidator = require('../validators/company/acceptAccount');
 
+const listController = require('../controllers/company/list');
+const listValidator = require('../validators/company/list');
+
 const router = express.Router();
 
 router.post('/request-account', auth.accessToken, verified, requestAccountValidators, requestAccountController);
 router.post('/reject-account', auth.accessToken, role.admin, rejectAccountValidator, rejectAccountController);
 router.post('/accept-account', auth.accessToken, role.admin, acceptAccountValidator, acceptAccountController);
 router.patch('/request-account/re-submit', auth.accessToken, verified, reSubmitRequestAccountValidator, reSubmitRequestAccountController);
+
+router.get('/list', auth.accessToken, role.admin, listValidator, listController);
 
 module.exports = router;

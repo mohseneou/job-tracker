@@ -68,6 +68,20 @@ const isNumber = (value, min = -Infinity, max = Infinity) => !isNaN(value) && va
  */
 const isObjectId = value => mongoose.Types.ObjectId.isValid(value);
 
+/**
+ * Checks if the provided value is a valid sort value (createdAt:+1)
+ * @param {any} value - The value to be checked
+ * @returns {boolean} - Returns true if value is a valid sort value, false otherwise
+ */
+const isSort = value => isString(value) && /^[a-zA-Z_]+:((-1)|(1))$/.test(value);
+
+/**
+ * Checks if the provided value is a valid select value(_id,name,createdAt)
+ * @param {any} value - The value to be checked
+ * @returns {boolean} - Returns true if value is a valid select value, false otherwise
+ */
+const isSelect = value => isString(value) && /^[a-zA-Z_0-9]+(,[a-zA-Z_0-9]+)*$/.test(value);
+
 module.exports = {
 	isString,
 	isEmail,
@@ -75,5 +89,7 @@ module.exports = {
 	isURL,
 	isStringArray,
 	isNumber,
-	isObjectId
+	isObjectId,
+	isSort,
+	isSelect,
 };
