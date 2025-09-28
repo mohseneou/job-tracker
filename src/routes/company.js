@@ -19,6 +19,9 @@ const acceptAccountValidator = require('../validators/company/acceptAccount');
 const listController = require('../controllers/company/list');
 const listValidator = require('../validators/company/list');
 
+const getOneController = require('../controllers/company/getOne');
+const getOneValidator = require('../validators/company/getOne');
+
 const router = express.Router();
 
 router.post('/request-account', auth.accessToken, verified, requestAccountValidators, requestAccountController);
@@ -27,5 +30,6 @@ router.post('/accept-account', auth.accessToken, role.admin, acceptAccountValida
 router.patch('/request-account/re-submit', auth.accessToken, verified, reSubmitRequestAccountValidator, reSubmitRequestAccountController);
 
 router.get('/list', auth.accessToken, role.admin, listValidator, listController);
+router.get('/:id', auth.accessToken, role.admin, getOneValidator, getOneController);
 
 module.exports = router;
